@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/sidebar"
+import { Player } from "@/components/player"
 import { MainContent } from "@/components/main-content"
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
       <div className="flex h-full">
         <Sidebar />
         <MainContent />
+        <Player />
       </div>
     </div>
   )
