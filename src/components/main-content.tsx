@@ -3,6 +3,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TrackList } from "@/components/track-list"
+import tracks from "@/modals/tracks"
 
 export function MainContent() {
   return (
@@ -17,13 +18,13 @@ export function MainContent() {
         </div>
         <ScrollArea className="h-[calc(100vh-10rem)]">
           <TabsContent value="stream" className="p-6">
-            <TrackList tab='default'/>
+            <TrackList tab='default' tracks={tracks}/>
           </TabsContent>
           <TabsContent value="trending" className="p-6">
-            <TrackList tab='featured'/>
+            <TrackList tab='featured' tracks={tracks}/>
           </TabsContent>
           <TabsContent value="Recent Releases" className="p-6">
-            <TrackList tab='recent'/>
+            <TrackList tab='recent' tracks={tracks}/>
           </TabsContent>
         </ScrollArea>
       </Tabs>

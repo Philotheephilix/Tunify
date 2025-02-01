@@ -4,12 +4,9 @@ import React, { useRef, useEffect } from 'react'
 import { Avatar } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, MoreHorizontal } from "lucide-react"
-import { useAudioPlayer } from "@/hooks/use-audio-player"
-import tracks from '@/modals/tracks'
-interface tabList{
-  tab:"default"| 'featured'|'recent'
-}
-export function TrackList({tab}:tabList) {
+import { Track, useAudioPlayer } from "@/hooks/use-audio-player"
+
+export function TrackList({ tab, tracks }: { tab: 'default' | 'featured' | 'recent'; tracks: Track[] }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const { 
     currentTrack, 

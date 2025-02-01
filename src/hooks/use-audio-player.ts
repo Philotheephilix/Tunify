@@ -3,7 +3,7 @@
 import tracks from "@/modals/tracks"
 import { create } from "zustand"
 
-interface Track {
+export interface Track {
   id: number
   title: string
   artist: string
