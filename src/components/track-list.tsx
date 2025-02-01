@@ -22,30 +22,23 @@ export function TrackList({ tab, tracks }: { tab: 'default' | 'featured' | 'rece
     if (audioRef.current) {
       setAudioElement(audioRef.current)
     }
-  }, [setAudioElement])
+  }, [])
 
   useEffect(() => {
-    if (!audioRef.current) return
-
     const audio = audioRef.current
+    if (!audio) return
 
     const handleTimeUpdate = () => {
       const progress = audio.currentTime / audio.duration
       setProgress(progress)
 
-      // Monitor progress milestones
-      if (progress >= 0.3) {
-        setMilestone('thirty', true)
-      }
-      if (progress >= 0.6) {
-        setMilestone('sixty', true)
-      }
+      if (progress >= 0.3) setMilestone('thirty', true)
+      if (progress >= 0.6) setMilestone('sixty', true)
     }
 
     const handleEnded = () => {
       setMilestone('completed', true)
       setProgress(0)
-      togglePlay()
     }
 
     audio.addEventListener('timeupdate', handleTimeUpdate)
@@ -55,14 +48,20 @@ export function TrackList({ tab, tracks }: { tab: 'default' | 'featured' | 'rece
       audio.removeEventListener('timeupdate', handleTimeUpdate)
       audio.removeEventListener('ended', handleEnded)
     }
-  }, [setProgress, setMilestone, togglePlay])
+  }, [])
 
   useEffect(() => {
-    if (!audioRef.current || !currentTrack?.audioUrl) return
-
-    audioRef.current.src = currentTrack.audioUrl
-    audioRef.current.play()
-  }, [currentTrack])
+    const audio = audioRef.current
+    if (!audio || !currentTrack?.audioUrl) return
+    if (audio.src !== currentTrack.audioUrl) {
+      audio.src = currentTrack.audioUrl
+    }
+    if (isPlaying) {
+      audio.play().catch(err => console.error("Playback error:", err))
+    } else {
+      audio.pause()
+    }
+  }, [currentTrack, isPlaying])
 
   return (
     <div className="space-y-4">

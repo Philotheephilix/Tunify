@@ -43,14 +43,21 @@ export const useAudioPlayer = create<AudioPlayerState>((set, get) => ({
   hasCompleted: false,
   audioElement: null,
 
-  playTrack: (track) => set({ 
-    currentTrack: track, 
-    isPlaying: true,
-    progress: 0,
-    has30PercentPlayed: false,
-    has60PercentPlayed: false,
-    hasCompleted: false
-  }),
+  playTrack: (track) => {
+    const state = get()
+    if (state.audioElement) {
+      state.audioElement.src = track.audioUrl
+      state.audioElement.play().catch(() => {})
+    }
+    set({ 
+      currentTrack: track, 
+      isPlaying: true,
+      progress: 0,
+      has30PercentPlayed: false,
+      has60PercentPlayed: false,
+      hasCompleted: false
+    })
+  },
 
   togglePlay: () => set((state) => {
     if (state.audioElement) {
