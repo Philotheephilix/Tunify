@@ -26,7 +26,9 @@ export function Player() {
     setVolume,
     seekTo,
     setMilestone,
-    setAudioElement
+    setAudioElement,
+    playPreviousTrack,
+    playNextTrack
   } = useAudioPlayer()
 
   useEffect(() => {
@@ -116,7 +118,7 @@ export function Player() {
               <Button variant="ghost" size="icon">
                 <Shuffle className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" onClick={playPreviousTrack}>
                 <SkipBack className="h-4 w-4" />
               </Button>
               <Button size="icon" onClick={togglePlay}>
@@ -126,7 +128,7 @@ export function Player() {
                   <Play className="h-4 w-4" />
                 )}
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" onClick={playNextTrack}>
                 <SkipForward className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon">

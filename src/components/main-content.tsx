@@ -12,18 +12,18 @@ export function MainContent() {
           <TabsList>
             <TabsTrigger value="stream">Stream</TabsTrigger>
             <TabsTrigger value="trending">Trending</TabsTrigger>
-            <TabsTrigger value="playlists">Playlists</TabsTrigger>
+            <TabsTrigger value="Recent Releases">Recent Releases</TabsTrigger>
           </TabsList>
         </div>
         <ScrollArea className="h-[calc(100vh-10rem)]">
           <TabsContent value="stream" className="p-6">
-            <TrackList />
+            <TrackList tab='default'/>
           </TabsContent>
           <TabsContent value="trending" className="p-6">
-            <TrackList />
+            <TrackList tab='featured'/>
           </TabsContent>
-          <TabsContent value="playlists" className="p-6">
-            <TrackList />
+          <TabsContent value="Recent Releases" className="p-6">
+            <TrackList tab='recent'/>
           </TabsContent>
         </ScrollArea>
       </Tabs>

@@ -1,5 +1,6 @@
 "use client"
 
+import tracks from "@/modals/tracks"
 import { create } from "zustand"
 
 interface Track {
@@ -9,6 +10,7 @@ interface Track {
   duration: string
   cover: string
   audioUrl: string
+  popularity:number
 }
 
 interface AudioPlayerState {
@@ -81,11 +83,33 @@ export const useAudioPlayer = create<AudioPlayerState>((set, get) => ({
   },
 
   playNextTrack: () => {
-    // Implement if needed
+    const state = get()
+    if (!state.currentTrack) return
+    
+    const currentIndex = tracks.findIndex(track => track.id === state.currentTrack?.id)
+    const nextTrack = tracks[currentIndex + 1] || tracks[0]
+    
+    if (nextTrack) {
+      if (state.isPlaying){
+        state.togglePlay()
+      }
+      state.playTrack(nextTrack)
+    }
   },
-
+  
   playPreviousTrack: () => {
-    // Implement if needed
+    const state = get()
+    if (!state.currentTrack) return
+    
+    const currentIndex = tracks.findIndex(track => track.id === state.currentTrack?.id)
+    const previousTrack = tracks[currentIndex - 1] || tracks[tracks.length - 1]
+    
+    if (previousTrack) {
+      if (state.isPlaying){
+        state.togglePlay()
+      }
+      state.playTrack(previousTrack)
+    }
   },
 
   setMilestone: (milestone, value) => 

@@ -5,32 +5,11 @@ import { Avatar } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, MoreHorizontal } from "lucide-react"
 import { useAudioPlayer } from "@/hooks/use-audio-player"
-
-const tracks = [
-  {
-    id: 1,
-    title: "Madness (Hello Halo remix)",
-    artist: "Drums Soundsystem vs Shade of Clay",
-    duration: "2:08",
-    cover: "/placeholder.svg?height=40&width=40",
-    audioUrl: "/audio/sample.mp3"
-  },
-]
-
-function AudioProgress() {
-  const progress = useAudioPlayer((state) => state.progress)
-  
-  return (
-    <div className="w-full h-1 bg-secondary mt-2">
-      <div 
-        className="h-full bg-primary transition-all duration-100" 
-        style={{ width: `${progress}%` }}
-      />
-    </div>
-  )
+import tracks from '@/modals/tracks'
+interface tabList{
+  tab:"default"| 'featured'|'recent'
 }
-
-export function TrackList() {
+export function TrackList({tab}:tabList) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const { 
     currentTrack, 
@@ -91,7 +70,10 @@ export function TrackList() {
   return (
     <div className="space-y-4">
       <audio ref={audioRef} />
-      {tracks.map((track) => (
+        {(tab === 'featured' 
+         ? [...tracks].sort((a, b) => b.popularity - a.popularity) 
+         : tracks
+        ).map((track) => (
         <div 
           key={track.id} 
           className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent group"
@@ -104,7 +86,6 @@ export function TrackList() {
             <div className="text-sm text-muted-foreground truncate">
               {track.artist}
             </div>
-            <AudioProgress />
           </div>
           <div className="text-sm text-muted-foreground">
             {track.duration}
