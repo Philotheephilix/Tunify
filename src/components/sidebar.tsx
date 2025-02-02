@@ -57,26 +57,23 @@ export function Sidebar() {
             </Button>
           </div>
           <div className="space-y-2">
-            
               <AlertDialog>
                 <AlertDialogTrigger>
                   <Button variant="ghost" className="w-full justify-start" asChild>
-                    <div>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Playlist
-                    </div>
+                    <span>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Playlist
+                    </span>
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Create New Playlist</AlertDialogTitle>
-                    <AlertDialogDescription>
                       <Input type="text" placeholder="Enter Playlist Name" value={playlistName} onChange={(e)=>{setPlaylistName(e.target.value)}} />
                       <SearchWindow
                         checked={true}
                         onSelectionChange={(selectedTracks) => setSelectedTracks(selectedTracks)}
                       />
-                    </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -84,9 +81,11 @@ export function Sidebar() {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-            <Button variant="ghost" className="w-full justify-start">
-              <ListMusic className="mr-2 h-4 w-4" />
-              Your Playlists
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <Link href="/myplaylists">
+                <ListMusic className="mr-2 h-4 w-4" />
+                My Playlists
+              </Link>
             </Button>
           </div>
         </div>
