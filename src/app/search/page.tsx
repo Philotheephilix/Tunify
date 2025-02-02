@@ -7,37 +7,51 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { TrackList } from "@/components/track-list"
 
 import tracks from "@/modals/tracks"
-import {Track} from '@/hooks/use-audio-player'
+import { Track } from "@/hooks/use-audio-player"
 
+interface SearchWindowProps {
+  checked?: boolean
+  onSelectionChange?: (selectedTracks: Track[]) => void
+}
 
-export default function SearchWindow() {
+export default function SearchWindow({ checked = false, onSelectionChange }: { checked?: boolean, onSelectionChange?: (selected: Track[]) => void }) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Track[]>([])
+  const [selectedTracks, setSelectedTracks] = useState<Track[]>([]) // Track selection state
   const [isLoading, setIsLoading] = useState(false)
-  const searchTracks = async (query: string) => {
-    const results: Track[] = tracks.filter((track) =>
-      track.title.toLowerCase().includes(query.toLowerCase()) || 
-      track.artist.toLowerCase().includes(query.toLowerCase())
-    );
-    if (results.length === 0) {
-      setResults([]);
-    }
-    setResults(results)
-    return false
-  }
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query.trim()) return
 
     setIsLoading(true)
     try {
-      const searchResults = await searchTracks(query)
-      setIsLoading(searchResults)
+      const searchResults = tracks.filter((track) =>
+        track.title.toLowerCase().includes(query.toLowerCase()) ||
+        track.artist.toLowerCase().includes(query.toLowerCase())
+      )
+      setResults(searchResults)
     } catch (error) {
       console.error("Error searching tracks:", error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleSelectTrack = (track: Track) => {
+    setSelectedTracks((prev) => {
+      const isAlreadySelected = prev.some((t) => t.id === track.id)
+      const updatedSelection = isAlreadySelected
+        ? prev.filter((t) => t.id !== track.id) // Remove if already selected
+        : [...prev, track] // Add if not selected
+
+      // **Ensure Sidebar updates happen AFTER render**
+      setTimeout(() => {
+        onSelectionChange?.(updatedSelection)
+      }, 0)
+
+      return updatedSelection
+    })
   }
 
   return (
@@ -50,7 +64,7 @@ export default function SearchWindow() {
               type="search"
               placeholder="Search for songs, artists, or albums"
               value={query}
-              onChange={(e) => {setQuery(e.target.value)}}
+              onChange={(e) => setQuery(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -61,7 +75,12 @@ export default function SearchWindow() {
           {isLoading ? (
             <div className="text-center">Searching...</div>
           ) : results.length > 0 ? (
-            <TrackList tab="default" tracks={results} />
+            <TrackList 
+              tab="default" 
+              tracks={results} 
+              onSelect={checked ? handleSelectTrack : undefined} 
+              selectedTracks={checked ? selectedTracks : undefined} 
+            />
           ) : (
             <div className="text-center text-muted-foreground">
               {query ? "No results found" : "Start searching for music"}
@@ -72,4 +91,3 @@ export default function SearchWindow() {
     </div>
   )
 }
-
