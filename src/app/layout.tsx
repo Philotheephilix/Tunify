@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Player } from "@/components/player";
-import { Sidebar } from "@/components/sidebar";
+import ClientLayout from "@/components/client-layout"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,19 +18,11 @@ export const metadata: Metadata = {
   description: "Tune in and Listen in a Fair way",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex h-full`}
-      >
-        <Sidebar />
-        <div className="flex-1">{children}</div>
-        <Player />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex h-full`}>
+        <ClientLayout>{children}</ClientLayout> {/* Render client component */}
       </body>
     </html>
   );
