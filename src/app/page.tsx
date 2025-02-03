@@ -1,10 +1,22 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Music, Wallet, Shield, Sparkles } from "lucide-react"
+import { ArrowRight, Music, Wallet, Shield, Sparkles, FanIcon } from "lucide-react"
 import Link from "next/link"
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { AlertDialogDescription } from "@radix-ui/react-alert-dialog"
 
 export default function LandingPage() {
+  function handleMode(plan: { name: string; price: string; period: string; features: string[]; featured: boolean }) {
+    if (plan.name=='Free'){
+      sessionStorage.setItem('User',"Free")
+    }
+    else{
+      sessionStorage.setItem('User','privy')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -23,11 +35,48 @@ export default function LandingPage() {
               while listeners enjoy unlimited music.
             </p>
             <div className="flex gap-4 justify-center pt-4">
-              <Button size="lg" asChild>
-                <Link href="/signup">
-                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+            <AlertDialog>
+                <AlertDialogTrigger>
+                  <Button variant="ghost" className="w-full justify-start bg-white" asChild>
+                    <span className="text-black">
+                      <FanIcon className="mr-2 h-4 w-4" />
+                      Get Started
+                    </span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Choose Your Plan</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <div className="flex gap-6">
+                  {pricingPlans.map((plan) => (
+                      <Card key={plan.name} className={`p-6 border-primary`} onClick={(e)=>{handleMode(plan)}}>
+                        {plan.featured && (
+                          <Badge className="mb-4" variant="secondary">
+                            Most Popular
+                          </Badge>
+                        )}
+                        <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
+                        <div className="mb-4">
+                          <span className="text-4xl font-bold">{plan.price}</span>
+                          <span className="text-muted-foreground">{plan.period}</span>
+                        </div>
+                        <ul className="space-y-2 mb-6">
+                          {plan.features.map((feature) => (
+                            <li key={feature} className="flex items-center gap-2">
+                              <Sparkles className="h-4 w-4 text-primary" />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </Card>
+                    ))}
+                    </div>
+                  <AlertDialogDescription >
+
+                  </AlertDialogDescription>
+                </AlertDialogContent>
+              </AlertDialog>
               <Button size="lg" variant="outline">
                 Learn More
               </Button>
@@ -81,7 +130,7 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-center mb-12">Simple, Transparent Pricing</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {pricingPlans.map((plan) => (
-              <Card key={plan.name} className={`p-6 ${plan.featured ? "border-primary" : ""}`}>
+              <Card key={plan.name} className={`p-6 ${plan.featured ? "border-primary" : ""}`} >
                 {plan.featured && (
                   <Badge className="mb-4" variant="secondary">
                     Most Popular

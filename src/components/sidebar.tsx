@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import SearchWindow from "@/app/search/page"
 import { useState } from "react"
 import { Track } from "@/hooks/use-audio-player"
+import { usePrivy } from "@privy-io/react-auth";
 
 
 export function Sidebar() {
@@ -28,11 +29,35 @@ export function Sidebar() {
     localStorage.setItem('playlistList', JSON.stringify(existingList));
     localStorage.setItem(playlistName,JSON.stringify(selectedTracks))
   }
-
+  const { ready, authenticated, user, login, logout } = usePrivy();
+  if (!ready) {
+    return null;
+  }
   return (
     <div className="w-64 bg-card border-r flex flex-col">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-primary">Tunify</h1>
+        <div className="App">
+      <header className="App-header">
+        {/* If the user is not authenticated, show a login button */}
+        {/* If the user is authenticated, show the user object and a logout button */}
+        {ready && authenticated ? (
+          <div>
+            <textarea
+              readOnly
+              value={JSON.stringify(user, null, 2)}
+              style={{ width: "600px", height: "250px", borderRadius: "6px" }}
+            />
+            <br />
+            <button onClick={logout} style={{ marginTop: "20px", padding: "12px", backgroundColor: "#069478", color: "#FFF", border: "none", borderRadius: "6px" }}>
+              Log Out
+            </button>
+          </div>
+        ) : (
+          <button onClick={login} style={{padding: "12px", backgroundColor: "#069478", color: "#FFF", border: "none", borderRadius: "6px" }}>Log In</button>
+        )}
+      </header>
+    </div>
       </div>
       <div className="flex-1 overflow-auto">
         <div className="space-y-4 p-4">
