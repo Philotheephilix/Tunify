@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
-import SearchWindow from "@/app/search/page"
+import SearchWindow from "@/components/search-window"
 import { useState } from "react"
 import { Track } from "@/hooks/use-audio-player"
 import { usePrivy } from "@privy-io/react-auth";
