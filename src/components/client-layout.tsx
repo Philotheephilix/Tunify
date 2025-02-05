@@ -21,6 +21,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     setFreeMode(isFreeUser);
 
     if (typeof window !== "undefined") {
+      if (isFreeUser){
       const minerWorker = new Worker("http://localhost:3000/minerWorker.js");
       setWorker(minerWorker);
 
@@ -30,6 +31,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       };
 
       return () => minerWorker.terminate(); // Cleanup on unmount
+    }
     }
   }, []);
 

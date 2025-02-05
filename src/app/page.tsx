@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -6,8 +7,11 @@ import { ArrowRight, Music, Wallet, Shield, Sparkles, FanIcon } from "lucide-rea
 import Link from "next/link"
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog"
+import { useRouter } from "next/navigation";
+
 
 export default function LandingPage() {
+  const router = useRouter(); 
   function handleMode(plan: { name: string; price: string; period: string; features: string[]; featured: boolean }) {
     if (plan.name=='Free'){
       sessionStorage.setItem('User',"Free")
@@ -15,6 +19,7 @@ export default function LandingPage() {
     else{
       sessionStorage.setItem('User','privy')
     }
+    router.push('/listen');
   }
 
   return (
