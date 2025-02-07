@@ -50,7 +50,21 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, [worker]); // Runs only when 'worker' is set (initial mount)
 
   return isHomePage ? (
+    <PrivyProvider
+    appId="cm6pcnuwz01bofv3214fs2c0g"
+    config={{
+      appearance: {
+        theme: "light",
+        accentColor: "#676FFF",
+        logo: "https://ethglobal.b-cdn.net/events/agents/square-logo/default.png",
+      },
+      embeddedWallets: {
+        createOnLogin: "users-without-wallets",
+      },
+    }}
+  >
     <div className="flex-1">{children}</div>
+    </PrivyProvider>
   ) : !freeMode ? (
     <>
       <PrivyProvider
