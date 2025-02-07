@@ -8,7 +8,7 @@ import { PrivyProvider } from "@privy-io/react-auth";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const isHomePage = pathname === "/" || pathname.startsWith("/admin");
 
   const [worker, setWorker] = useState<Worker | null>(null);
   const [freeMode, setFreeMode] = useState(false);

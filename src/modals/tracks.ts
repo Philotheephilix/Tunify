@@ -5,7 +5,7 @@ const tracks = [
     artist: "Drums Soundsystem vs Shade of Clay",
     duration: "2:08",
     cover: "/placeholder.svg?height=40&width=40",
-    audioUrl: "/audio/sample.mp3",
+    audioUrl: "https://bafybeibvavsiyzxtvirsrmvvhnejp4fytmdwf5p2g7z5qtc4drycs3uf6m.ipfs.dweb.link/",
     popularity: 1
   },  {
     id: 2,
