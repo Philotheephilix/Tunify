@@ -45,7 +45,7 @@ export default function LandingPage() {
                   <Button variant="ghost" className="w-full justify-start bg-white" asChild>
                     <span className="text-black">
                       <FanIcon className="mr-2 h-4 w-4" />
-                      Get Started
+                      Start Listening
                     </span>
                   </Button>
                 </AlertDialogTrigger>
@@ -83,7 +83,9 @@ export default function LandingPage() {
                 </AlertDialogContent>
               </AlertDialog>
               <Button size="lg" variant="outline">
-                Learn More
+                <Link href="/admin/login">
+                Creator Login
+                </Link>
               </Button>
             </div>
           </div>
@@ -193,7 +195,7 @@ export default function LandingPage() {
             decentralized.
           </p>
           <Button size="lg" variant="secondary" asChild>
-            <Link href="/signup">
+            <Link href="/listen">
               Get Started Now <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
