@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "ai-agent-sdk": "file:/home/philix/Documents/GitHub/ai-agent-sdk/packages/ai-agent-sdk",
     "@gradio/client": "^1.11.0",
     "@privy-io/react-auth": "^2.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.5",
