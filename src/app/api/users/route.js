@@ -139,28 +139,7 @@ export async function GET(request) {
   }
 }
 
-// GET /api/users/artist
-export async function GET_ARTIST_LISTENING(request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const artistID = searchParams.get('artistID');
 
-    const artistListenData = readArtistListenData();
-
-    if (artistID) {
-      const totalMinutes = artistListenData[artistID] || 0;
-      return NextResponse.json({ artistID, totalMinutes });
-    }
-
-    return NextResponse.json(artistListenData);
-  } catch (error) {
-    console.error('GET_ARTIST_LISTENING Error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
 // POST /api/users
 export async function POST(request) {
   try {
