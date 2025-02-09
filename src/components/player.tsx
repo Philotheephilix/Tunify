@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { 
@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { useAudioPlayer } from "@/hooks/use-audio-player"
 import { usePrivy } from "@privy-io/react-auth"
+import { Client } from "@gradio/client"
 
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -32,6 +33,8 @@ export function Player() {
     playPreviousTrack,
     playNextTrack
   } = useAudioPlayer()
+
+  const [isLoading, setIsLoading] = useState(false)
 
   // Track which milestones have been reached for current song
   const milestonesReached = useRef({
@@ -142,6 +145,34 @@ export function Player() {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  const handleChangeVoice = async () => {
+    if (!currentTrack) return
+
+    setIsLoading(true)
+
+    try {
+      const client = await Client.connect("yuntian-deng/ChatGPT");
+      const result = await client.predict("/predict", { 		
+          inputs: "Hello!!", 		
+          top_p: 0, 		
+          temperature: 0, 		
+          chat_counter: 3, 		
+          chatbot: [["Hello!",null]], 
+      });
+      const description = (result.data as string[])[0] // Assuming the description is in the first element of the array
+
+      // Use TTS to speak the description
+      const utterance = new SpeechSynthesisUtterance(description)
+      speechSynthesis.speak(utterance)
+
+      console.log(description)
+    } catch (error) {
+      console.error("Error fetching song description:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="w-80 border-l bg-card p-4 flex flex-col gap-4">
       <audio ref={audioRef} />
@@ -203,6 +234,13 @@ export function Player() {
                 onValueChange={(value) => setVolume(value[0])}
               />
             </div>
+            <Button 
+              variant="outline" 
+              onClick={handleChangeVoice} 
+              disabled={isLoading}
+            >
+              {isLoading ? "Processing..." : "Change Voice"}
+            </Button>
           </div>
         </>
       )}
