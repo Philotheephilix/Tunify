@@ -40,8 +40,8 @@ export default function PlaylistGrid() {
 
   const handleTrackSelect = (track: Track) => {
     setSelectedTracks((prev) =>
-      prev.some((t) => t.id === track.id)
-        ? prev.filter((t) => t.id !== track.id)
+      prev.some((t) => t.songUrl === track.songUrl)
+        ? prev.filter((t) => t.songUrl !== track.songUrl)
         : [...prev, track]
     );
   };
@@ -86,8 +86,8 @@ export default function PlaylistGrid() {
                     {/* Track Preview */}
                     <div className="w-full text-sm text-muted-foreground">
                       {playlistTracks[playlist]?.slice(0, 3).map((track, index) => (
-                        <div key={track.id} className="truncate text-center">
-                          {track.title}
+                        <div key={track.songUrl} className="truncate text-center">
+                          {track.songName}
                         </div>
                       ))}
                       {playlistTracks[playlist]?.length > 3 && (
