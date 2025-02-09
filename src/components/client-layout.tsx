@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/sidebar";
-import { Player } from "@/components/player";
+import {Player} from "@/components/player"
 import { PrivyProvider } from "@privy-io/react-auth";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {

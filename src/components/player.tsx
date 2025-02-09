@@ -13,39 +13,11 @@ import {
   Shuffle 
 } from "lucide-react"
 import { useAudioPlayer } from "@/hooks/use-audio-player"
-export type GradioConfig = {
-  provider: "GRADIO";
-  name: string;
-  appUrl: string;
-  endpoint?: string;
-  parameters?: unknown[];
-  temperature?: number; 
-  apiKey?: string;
-};
+import { usePrivy } from "@privy-io/react-auth"
 
-export  function Player() {
-//   const gradioConfig: GradioConfig = {
-//     provider: "GRADIO",
-//     name: "deepseek-vl2-small",
-//     appUrl: "deepseek-ai/deepseek-vl2-small",
-//     parameters: [
-//         [["Hello!", null]],
-//         0.9, // topP
-//         0.1, // temperature
-//         0, // repetitionPenalty
-//         100, // maxGenerationTokens
-//         0, // maxHistoryTokens
-//         "deepseek-ai/deepseek-vl2-small", // model name
-//     ],
-// };
-// const llm = new Agent(gradioConfig);
-// const response = await llm.generate(
-//     [{ role: "user", content: "Hello!" }],
-//     { text: "hello" },
-//     {}
-// );
-// console.log(response.value);
+export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
+  const { user } = usePrivy()
   const { 
     currentTrack, 
     isPlaying, 
@@ -61,6 +33,37 @@ export  function Player() {
     playNextTrack
   } = useAudioPlayer()
 
+  // Track which milestones have been reached for current song
+  const milestonesReached = useRef({
+    thirty: false,
+    sixty: false,
+    completed: false
+  })
+
+  const updateUserMinutes = async (minutes: number, artistID: string) => {
+    if (!user?.id) return
+
+    try {
+      const response = await fetch('/api/users', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userID: user.id, // user ID from Privy auth
+          artistID: artistID, // artist's ID from currentTrack
+          addMinutes: minutes.toFixed(2)
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update minutes listened')
+      }
+    } catch (error) {
+      console.error('Error updating minutes listened:', error)
+    }
+  }
+
   useEffect(() => {
     if (audioRef.current) {
       setAudioElement(audioRef.current)
@@ -69,6 +72,13 @@ export  function Player() {
 
   useEffect(() => {
     if (!audioRef.current || !currentTrack?.songUrl) return
+
+    // Reset milestones when new track starts
+    milestonesReached.current = {
+      thirty: false,
+      sixty: false,
+      completed: false
+    }
 
     audioRef.current.src = currentTrack.songUrl
     audioRef.current.play()
@@ -79,21 +89,40 @@ export  function Player() {
 
     const audio = audioRef.current
 
+    // Calculate minutes for each milestone
+    const thirtyPercentMinutes = (audio.duration * 0.3) / 60
+    const sixtyPercentMinutes = (audio.duration * 0.6) / 60
+    const remainingMinutes = (audio.duration * 0.4) / 60
+
     const handleTimeUpdate = () => {
       const currentProgress = (audio.currentTime / audio.duration) * 100
       setProgress(currentProgress)
 
-      // Monitor progress milestones
-      if (currentProgress >= 30) {
+      // Monitor progress milestones and update minutes
+      if (currentProgress >= 30 && !milestonesReached.current.thirty) {
         setMilestone('thirty', true)
+        milestonesReached.current.thirty = true
+        if (currentTrack?.artistId) {
+          updateUserMinutes(thirtyPercentMinutes, currentTrack.artistId)
+        }
       }
-      if (currentProgress >= 60) {
+      if (currentProgress >= 60 && !milestonesReached.current.sixty) {
         setMilestone('sixty', true)
+        milestonesReached.current.sixty = true
+        if (currentTrack?.artistId) {
+          updateUserMinutes(thirtyPercentMinutes, currentTrack.artistId)
+        }
       }
     }
 
     const handleEnded = () => {
-      setMilestone('completed', true)
+      if (!milestonesReached.current.completed) {
+        setMilestone('completed', true)
+        milestonesReached.current.completed = true
+        if (currentTrack?.artistId) {
+          updateUserMinutes(thirtyPercentMinutes, currentTrack.artistId)
+        }
+      }
       setProgress(0)
       togglePlay()
     }
@@ -105,7 +134,7 @@ export  function Player() {
       audio.removeEventListener('timeupdate', handleTimeUpdate)
       audio.removeEventListener('ended', handleEnded)
     }
-  }, [setProgress, setMilestone, togglePlay])
+  }, [setProgress, setMilestone, togglePlay, currentTrack])
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)

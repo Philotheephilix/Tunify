@@ -1,0 +1,14 @@
+[
+  {
+    "userID": "did:privy:cm6phhbue0097111dq4cyex3d",
+    "walletAddress": "0x8Ec4Ccb4922dc59a7247F877FF197fcC8993167c",
+    "balance": "0.00501",
+    "minuteslistened": "2.48904"
+  },
+  {
+    "userID": "did:privy:cm6xo7cva01lqfo4t8oc2xww8",
+    "walletAddress": "0xEA17a818eDA0f3B6653de57B0498BC7Faa1169aE",
+    "balance": "0",
+    "minuteslistened": "0"
+  }
+]
