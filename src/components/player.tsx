@@ -13,8 +13,38 @@ import {
   Shuffle 
 } from "lucide-react"
 import { useAudioPlayer } from "@/hooks/use-audio-player"
+export type GradioConfig = {
+  provider: "GRADIO";
+  name: string;
+  appUrl: string;
+  endpoint?: string;
+  parameters?: unknown[];
+  temperature?: number; 
+  apiKey?: string;
+};
 
-export function Player() {
+export  function Player() {
+//   const gradioConfig: GradioConfig = {
+//     provider: "GRADIO",
+//     name: "deepseek-vl2-small",
+//     appUrl: "deepseek-ai/deepseek-vl2-small",
+//     parameters: [
+//         [["Hello!", null]],
+//         0.9, // topP
+//         0.1, // temperature
+//         0, // repetitionPenalty
+//         100, // maxGenerationTokens
+//         0, // maxHistoryTokens
+//         "deepseek-ai/deepseek-vl2-small", // model name
+//     ],
+// };
+// const llm = new Agent(gradioConfig);
+// const response = await llm.generate(
+//     [{ role: "user", content: "Hello!" }],
+//     { text: "hello" },
+//     {}
+// );
+// console.log(response.value);
   const audioRef = useRef<HTMLAudioElement>(null)
   const { 
     currentTrack, 

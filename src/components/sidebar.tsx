@@ -14,16 +14,35 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import SearchWindow from "@/components/search-window"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Track } from "@/hooks/use-audio-player"
 import { usePrivy } from "@privy-io/react-auth";
 import { useSendTransaction } from '@privy-io/react-auth';
 import type { UnsignedTransactionRequest, SendTransactionModalUIOptions } from '@privy-io/react-auth';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+
 
 export function Sidebar() {
   const { sendTransaction } = useSendTransaction();
-  const [toAddress, setToAddress] = useState<string>('0x7FA08A32EfFD1ac1217C8cEBe2fA3e6f395c3FC2');
-  const [amount, setAmount] = useState<string>('0.0002');
+  const [toAddress, setToAddress] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/getMasterWallet');
+        const data = await response.json();
+        if (data.address) {
+          setToAddress(data.address);
+        }
+      } catch (error) {
+        console.error('Error fetching address:', error);
+      }
+    };
+
+    fetchAddress();
+  }, []);
+  const [amount, setAmount] = useState<string>('0.002');
+  const [balance, setBalance] = useState<string>('');
+  const [isOpen, setIsOpen] = useState(false);
   const [playlistName,setPlaylistName]=useState("");
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([])
   function addPlaylist(): void {
@@ -33,9 +52,12 @@ export function Sidebar() {
     localStorage.setItem(playlistName,JSON.stringify(selectedTracks))
   }
   const { ready, authenticated, user, login, logout } = usePrivy();
-  if (!ready) {
-    return null;
-  }
+
+  useEffect(() => {
+    if (ready && !authenticated) {
+      setIsOpen(true)
+    }
+  }, [])
   const handleSendTransaction = async () => {
     if (!toAddress || !amount) {
       alert('Please enter a valid address and amount.');
@@ -64,6 +86,10 @@ export function Sidebar() {
       alert('Transaction failed. Please try again.');
     }
   };
+
+  function handleFetchBalance(): void {
+
+  }
 
   return (
     <div className="w-64 bg-card border-r flex flex-col h-screen p-4">
@@ -127,12 +153,43 @@ export function Sidebar() {
         </div>
 
       </div>
+      <div className="flex flex-col items-center gap-4 p-4">
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-xs">
+            <DialogHeader>
+              <DialogTitle>Add Minutes</DialogTitle>
+              <DialogDescription>5 min ~ 0.0005 USD ~  0.000000188 ETH</DialogDescription>
+              <DialogDescription>Deposit a minimun of 0.002 ETH</DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <label className="text-sm font-medium">Amount</label>
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-between mt-4 gap-4">
+              <Button onClick={handleSendTransaction}
+              variant="default" className="rounded-lg">
+                Transfer
+              </Button>
+              <DialogClose asChild>
+                <Button variant="secondary">Close</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
       {ready && authenticated ? (
         <>
-        <Button onClick={handleSendTransaction}
+        <Button onClick={() => setIsOpen(true)}
         variant="ghost" className="rounded-lg">
           Transfer
-        </Button><Button onClick={logout} variant="destructive" className="rounded-lg">
+        </Button>
+
+        <Button onClick={logout} variant="destructive" className="rounded-lg">
             Log Out
         </Button>
         </>
