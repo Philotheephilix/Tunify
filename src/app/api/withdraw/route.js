@@ -84,11 +84,38 @@ export async function POST(req) {
       const txResult = await txResponse.json();
   
       // Update artist balance to 0
-      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/updateBalance`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ artistId, balance: "0" }),
-      });
+      try {
+        if (!artistId) {
+          return new Response(JSON.stringify({ error: "Artist ID is required" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        const rawData = fs.readFileSync(filePath, "utf8");
+        const artists = JSON.parse(rawData);
+    
+        const artistIndex = artists.findIndex((a) => a.artistId === artistId);
+        if (artistIndex === -1) {
+          return new Response(JSON.stringify({ error: "Artist not found" }), {
+            status: 404,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        artists[artistIndex].balance = balance;
+        fs.writeFileSync(filePath, JSON.stringify(artists, null, 2));
+    
+        return new Response(JSON.stringify({ success: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ error: error.message || "Internal server error" }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
   
       return new Response(JSON.stringify({ success: true, transaction: txResult }), {
         status: 200,
