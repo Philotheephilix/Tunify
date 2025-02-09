@@ -5,9 +5,9 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TrackList } from "@/components/track-list"
 import { Track } from '@/hooks/use-audio-player'
-
+import importedTracks from "@/modals/tracks"
 export function MainContent() {
-  const [tracks, setTracks] = useState<{ stream: Track[], featured: Track[] }>({
+  const [stateTracks, setStateTracks] = useState<{ stream: Track[], featured: Track[] }>({
     stream: [],
     featured: []
   })
@@ -15,14 +15,13 @@ export function MainContent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://bafybeic7ywhiwszs6pqllxis5gaiw3tcgejcbbjw4t22lh43cageiy3ykq.ipfs.dweb.link/')
-        const data = await response.json()
+        // const response = await fetch('https://bafybeic7ywhiwszs6pqllxis5gaiw3tcgejcbbjw4t22lh43cageiy3ykq.ipfs.dweb.link/')
+        // const data = await response.json()
 
-        const fetchedTracks = data.data
 
-        setTracks({
-          stream: fetchedTracks,
-          featured: shuffleArray([...fetchedTracks])
+        setStateTracks({
+          stream: importedTracks,
+          featured: shuffleArray([...importedTracks])
         })
       } catch (error) {
         console.error("Failed to fetch tracks:", error)
@@ -57,21 +56,21 @@ export function MainContent() {
         <TabsContent value="stream" className="p-6">
           <ScrollArea className="overflow-x-auto scrollbar-hide">
             <h1 className="p-4 text-2xl font-semibold">General</h1>
-            <TrackList  tracks={getTracksByGenre("general", tracks.stream)} tab={"featured"} />
+            <TrackList  tracks={getTracksByGenre("general", stateTracks.stream)} tab={"featured"} />
             <h1 className="p-4 text-2xl font-semibold">Phonk</h1>
-            <TrackList tracks={getTracksByGenre("phonk", tracks.stream)} tab={"featured"} />
+            <TrackList tracks={getTracksByGenre("phonk", stateTracks.stream)} tab={"featured"} />
             <h1 className="p-4 text-2xl font-semibold">Anime</h1>
-            <TrackList  tracks={getTracksByGenre("anime", tracks.stream)} tab={"featured"} />
+            <TrackList  tracks={getTracksByGenre("anime", stateTracks.stream)} tab={"featured"} />
           </ScrollArea>
         </TabsContent>
         <TabsContent value="featured" className="p-6">
           <ScrollArea className="overflow-x-auto scrollbar-hide">
           <h1 className="p-4 text-2xl font-semibold">General</h1>
-            <TrackList tracks={getTracksByGenre("phonk", tracks.featured)} tab={"featured"} />
+            <TrackList tracks={getTracksByGenre("phonk", stateTracks.featured)} tab={"featured"} />
             <h1 className="p-4 text-2xl font-semibold">Phonk</h1>
-            <TrackList  tracks={getTracksByGenre("anime", tracks.featured)} tab={"featured"} />
+            <TrackList  tracks={getTracksByGenre("anime", stateTracks.featured)} tab={"featured"} />
             <h1 className="p-4 text-2xl font-semibold">Anime</h1>
-            <TrackList  tracks={getTracksByGenre("general", tracks.featured)} tab={"featured"} />
+            <TrackList  tracks={getTracksByGenre("general", stateTracks.featured)} tab={"featured"} />
           </ScrollArea>
         </TabsContent>
       </Tabs>
