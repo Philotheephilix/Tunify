@@ -4,13 +4,12 @@ import tracks from "@/modals/tracks"
 import { create } from "zustand"
 
 export interface Track {
-  id: number
-  title: string
-  artist: string
-  duration: string
-  cover: string
-  audioUrl: string
-  popularity:number
+  songName:string,
+  songUrl:string,
+  thumbnailUrl:string,
+  artistName:string,
+  artistId:string,
+  genre:string
 }
 
 interface AudioPlayerState {
@@ -46,7 +45,7 @@ export const useAudioPlayer = create<AudioPlayerState>((set, get) => ({
   playTrack: (track) => {
     const state = get()
     if (state.audioElement) {
-      state.audioElement.src = track.audioUrl
+      state.audioElement.src = track.songUrl
       state.audioElement.play().catch(() => {})
     }
     set({ 
@@ -93,7 +92,7 @@ export const useAudioPlayer = create<AudioPlayerState>((set, get) => ({
     const state = get()
     if (!state.currentTrack) return
     
-    const currentIndex = tracks.findIndex(track => track.id === state.currentTrack?.id)
+    const currentIndex = tracks.findIndex(track => track.songUrl === state.currentTrack?.songUrl)
     const nextTrack = tracks[currentIndex + 1] || tracks[0]
     
     if (nextTrack) {
@@ -108,7 +107,7 @@ export const useAudioPlayer = create<AudioPlayerState>((set, get) => ({
     const state = get()
     if (!state.currentTrack) return
     
-    const currentIndex = tracks.findIndex(track => track.id === state.currentTrack?.id)
+    const currentIndex = tracks.findIndex(track => track.songUrl === state.currentTrack?.songUrl)
     const previousTrack = tracks[currentIndex - 1] || tracks[tracks.length - 1]
     
     if (previousTrack) {

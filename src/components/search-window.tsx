@@ -27,8 +27,8 @@ const SearchWindow: React.FC<SearchWindowProps> = ({ checked = false, onSelectio
     setIsLoading(true)
     try {
       const searchResults = tracks.filter((track) =>
-        track.title.toLowerCase().includes(query.toLowerCase()) ||
-        track.artist.toLowerCase().includes(query.toLowerCase())
+        track.songName.toLowerCase().includes(query.toLowerCase()) ||
+        track.songUrl.toLowerCase().includes(query.toLowerCase())
       )
       setResults(searchResults)
     } catch (error) {
@@ -40,9 +40,9 @@ const SearchWindow: React.FC<SearchWindowProps> = ({ checked = false, onSelectio
 
   const handleSelectTrack = (track: Track) => {
     setSelectedTracks((prev) => {
-      const isAlreadySelected = prev.some((t) => t.id === track.id)
+      const isAlreadySelected = prev.some((t) => t.songUrl === track.songUrl)
       const updatedSelection = isAlreadySelected
-        ? prev.filter((t) => t.id !== track.id)
+        ? prev.filter((t) => t.songUrl !== track.songUrl)
         : [...prev, track]
 
       setTimeout(() => {

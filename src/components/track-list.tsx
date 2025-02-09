@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, MoreHorizontal, Check } from "lucide-react"
 import { Track, useAudioPlayer } from "@/hooks/use-audio-player"
+import { ScrollArea } from "./ui/scroll-area"
 
 interface TrackListProps {
   tab: "default" | "featured" | "recent"
@@ -55,9 +56,9 @@ export function TrackList({ tab, tracks, onSelect, selectedTracks = [] }: TrackL
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !currentTrack?.audioUrl) return
-    if (audio.src !== currentTrack.audioUrl) {
-      audio.src = currentTrack.audioUrl
+    if (!audio || !currentTrack?.songUrl) return
+    if (audio.src !== currentTrack.songUrl) {
+      audio.src = currentTrack.songUrl
     }
     if (isPlaying) {
       audio.play().catch((err) => console.error("Playback error:", err))
@@ -66,28 +67,23 @@ export function TrackList({ tab, tracks, onSelect, selectedTracks = [] }: TrackL
     }
   }, [currentTrack, isPlaying])
 
-  const sortedTracks = tab === "featured" 
-    ? [...tracks].sort((a, b) => b.popularity - a.popularity) 
-    : tracks
-
   return (
-    <div className="w-full overflow-x-auto pb-4">
-      <audio ref={audioRef} />
-      <div className="flex gap-4 px-4">
-        {sortedTracks.map((track) => {
-          const isSelected = selectedTracks.some((t) => t.id === track.id)
-          const isCurrentTrack = currentTrack?.id === track.id
+    <div className="w-full pb-4 overflow-hidden">
+      <div className="flex gap-4 px-4 overflow-x-auto no-scrollbar w-[69vw]">
+        {tracks.map((track) => {
+          const isSelected = selectedTracks.some((t) => t.songUrl === track.songUrl)
+          const isCurrentTrack = currentTrack?.songUrl === track.songUrl
 
           return (
             <div
-              key={track.id}
+              key={track.songUrl}
               className={`flex-none w-48 group ${isSelected ? "opacity-75" : ""}`}
               onClick={() => onSelect?.(track)}
             >
               <div className="relative aspect-square mb-2 rounded-lg overflow-hidden">
                 <img
-                  src={track.cover}
-                  alt={track.title}
+                  src={track.thumbnailUrl}
+                  alt={track.songName}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -115,13 +111,13 @@ export function TrackList({ tab, tracks, onSelect, selectedTracks = [] }: TrackL
 
               {/* Track Info */}
               <div className="space-y-1 px-2">
-                <div className="font-medium truncate">{track.title}</div>
+                <div className="font-medium truncate">{track.songName}</div>
                 <div className="text-sm text-muted-foreground truncate">
-                  {track.artist}
+                  {track.artistName}
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    {track.duration}
+                    {/* {track.duration} */}
                   </span>
                   {onSelect && (
                     <Button variant="ghost" size="icon" className="h-8 w-8">

@@ -38,9 +38,9 @@ export function Player() {
   }, [setAudioElement])
 
   useEffect(() => {
-    if (!audioRef.current || !currentTrack?.audioUrl) return
+    if (!audioRef.current || !currentTrack?.songUrl) return
 
-    audioRef.current.src = currentTrack.audioUrl
+    audioRef.current.src = currentTrack.songUrl
     audioRef.current.play()
   }, [currentTrack])
 
@@ -90,14 +90,14 @@ export function Player() {
         <>
           <div className="aspect-square bg-muted rounded-lg overflow-hidden">
             <img
-              src={currentTrack.cover || "/placeholder.svg"}
-              alt={currentTrack.title}
+              src={currentTrack.thumbnailUrl || "/placeholder.svg"}
+              alt={currentTrack.songName}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="space-y-1">
-            <h3 className="font-medium leading-none">{currentTrack.title}</h3>
-            <p className="text-sm text-muted-foreground">{currentTrack.artist}</p>
+            <h3 className="font-medium leading-none">{currentTrack.songName}</h3>
+            <p className="text-sm text-muted-foreground">{currentTrack.artistName}</p>
           </div>
           <div className="space-y-4">
             <div className="space-y-2">
